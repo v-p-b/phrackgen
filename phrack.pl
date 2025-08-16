@@ -14,8 +14,6 @@
 #         Guess whether the line was broken because it was too long, or for formatting reasons (see formatn) #This is where things go Wrong
 # Zip the result into an epub
 
-#use LWP::Simple;
-use Archive::Extract;
 use strict;
 use utf8;
 
@@ -54,12 +52,6 @@ while (1) { #for every issue
 
     #read in and parse the issue's Table of Contents
     my $contents;
-    #unless(-e "$localcontent/toc-$issueno"){
-    #    my $rc = getstore("https://phrack.org/issues/$issueno/1", "$localcontent/toc-$issueno");
-    #    if (is_error($rc)) {
-    #        die "getstore of <$issueno> failed with $rc";
-    #    }
-    #}
 
     {
         local $/;
@@ -68,8 +60,6 @@ while (1) { #for every issue
     }
     $contents =~ m/<table.*?class="tissue"(.*?)<\/table>/s;
     my @titles = ($1 =~ m/^.*?article">(.*?)<.*?$/msg);
-    print "xxx";
-    print join(", ",@titles);
     my @authors = ($contents =~ m/^.*?align="right">(.*?)<.*?$/msg);
     last unless @titles;
 
@@ -153,15 +143,7 @@ print 'Done';
 
 sub getArticle{
     my($issueno, $i, $localcontent) = @_;
-    #unless(-e "$localcontent/phrack$issueno.tar.gz"){
-    #getstore("https://archives.phrack.org/tgz/phrack$issueno.tar.gz", "$localcontent/phrack$issueno.tar.gz");
-        print "Downloading $issueno\n";
-        #my $ae = Archive::Extract->new( archive => "$localcontent/phrack$issueno.tar.gz" );
-        #my $ok = $ae->extract(to=>"$localcontent/");
-        #if($issueno eq 66) {`mv $localcontent/phrack66 $localcontent/66`;}
-        #}
     $file = sprintf("%s/%s/%s.txt",$localcontent, $issueno, $i);
-    #($file) = glob $file."*";
 
     print $file;
     return $file;
