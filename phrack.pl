@@ -13,7 +13,8 @@
 #         Preprocess to convert to xhtml (see filter())
 #         Guess whether the line was broken because it was too long, or for formatting reasons (see formatn) #This is where things go Wrong
 # Zip the result into an epub
-use LWP::Simple;
+
+#use LWP::Simple;
 use Archive::Extract;
 use strict;
 use utf8;
@@ -47,24 +48,29 @@ my $toc = '<?xml version="1.0" encoding="UTF-8"?>
   <head>
     <title>Phrack Magazine</title>
   </head>
-    <body><table><tr>';
+<body><table><tr>';
 while (1) { #for every issue
     $i=0;
 
     #read in and parse the issue's Table of Contents
     my $contents;
-    unless(-e "$localcontent/toc-$issueno"){
-        getstore("http://www.phrack.org/issues.html?issue=$issueno", "$localcontent/toc-$issueno");
-    }
+    #unless(-e "$localcontent/toc-$issueno"){
+    #    my $rc = getstore("https://phrack.org/issues/$issueno/1", "$localcontent/toc-$issueno");
+    #    if (is_error($rc)) {
+    #        die "getstore of <$issueno> failed with $rc";
+    #    }
+    #}
 
     {
         local $/;
         open (my $TABLEOFCONTENTS, "$localcontent/toc-$issueno");
         $contents = <$TABLEOFCONTENTS>;
     }
-    $contents =~ m/<table.*?class="tissue">(.*?)<\/table>/s;
-    my @titles = ($1 =~ m/^.*?align="left".*?title="(.*?)".*?$/msg);
-    my @authors = ($contents =~ m/^.*?align="right".*?title="(.*?)".*?$/msg);
+    $contents =~ m/<table.*?class="tissue"(.*?)<\/table>/s;
+    my @titles = ($1 =~ m/^.*?article">(.*?)<.*?$/msg);
+    print "xxx";
+    print join(", ",@titles);
+    my @authors = ($contents =~ m/^.*?align="right">(.*?)<.*?$/msg);
     last unless @titles;
 
     #Update/generate the new table of contents
@@ -82,7 +88,6 @@ while (1) { #for every issue
     $epubTOC .= "</navPoint>";
     $out .= "</ul>";
 
- 
     $i=0;
     foreach $title (@titles){ #for every article in the issue
 
@@ -148,29 +153,17 @@ print 'Done';
 
 sub getArticle{
     my($issueno, $i, $localcontent) = @_;
-    unless(-e "$localcontent/phrack$issueno.tar.gz"){
-        getstore("http://www.phrack.org/archives/tgz/phrack$issueno.tar.gz", "$localcontent/phrack$issueno.tar.gz");
+    #unless(-e "$localcontent/phrack$issueno.tar.gz"){
+    #getstore("https://archives.phrack.org/tgz/phrack$issueno.tar.gz", "$localcontent/phrack$issueno.tar.gz");
         print "Downloading $issueno\n";
-        my $ae = Archive::Extract->new( archive => "$localcontent/phrack$issueno.tar.gz" );
-        my $ok = $ae->extract(to=>"$localcontent/");
-        if($issueno eq 66) {`mv $localcontent/phrack66 $localcontent/66`;}
-    }
+        #my $ae = Archive::Extract->new( archive => "$localcontent/phrack$issueno.tar.gz" );
+        #my $ok = $ae->extract(to=>"$localcontent/");
+        #if($issueno eq 66) {`mv $localcontent/phrack66 $localcontent/66`;}
+        #}
+    $file = sprintf("%s/%s/%s.txt",$localcontent, $issueno, $i);
+    #($file) = glob $file."*";
 
-    if ($issueno < 56){
-        $file = sprintf("%s/%s/P%02d-{%02d,%01d}",$localcontent, $issueno, $issueno, $i, $i);
-        ($file) = glob $file."*";
-    }
-    elsif ($issueno < 59){
-        $file = sprintf("%s/%s/p%02d-0x%02d", $localcontent, $issueno, $issueno, $i);
-    }
-    elsif ($issueno eq 66){
-        $file = sprintf("%s/%s/p%02d_0x%02X", $localcontent, $issueno, $issueno, $i);
-        ($file) = glob $file."*";
-    }
-    else {
-        $file = sprintf("%s/%s/p%02d{-,_}0x%02x",$localcontent, $issueno, $issueno, $i);
-        ($file) = glob $file."*";
-    }
+    print $file;
     return $file;
 }
 
