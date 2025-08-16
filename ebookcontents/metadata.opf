@@ -1,0 +1,19 @@
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="bookid">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:title>Phrack Magazine</dc:title>
+        <dc:creator opf:file-as="Phrack Inc" opf:role="aut">Phrack Inc</dc:creator>
+        <dc:language>en-US</dc:language>
+        <dc:identifier id="bookid">Phrack Magazine</dc:identifier>
+        <dc:rights>See phrack.org</dc:rights>
+        <dc:source>http://phrack.org/</dc:source>
+    </metadata>
+    <manifest>
+        <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+        <item id="phrack" href="phrack.html" media-type="application/xhtml+xml"/>
+        <item id="cover"       href="cover.html"    media-type="application/xhtml+xml"/>
+        <item id="cover-image" href="phrack-logo.jpg" media-type="image/jpeg"/>
+    </manifest>
+    <spine toc="ncx">
+        <itemref idref="phrack"/>
+    </spine>
+</package>
