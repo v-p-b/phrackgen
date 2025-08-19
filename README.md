@@ -8,3 +8,7 @@ I fixed some regexes, removed the `LWP::Simple` and `Archive::Extract`dependenci
 ```
 $ ./phrack.sh
 ```
+
+Generated issues in .ebook and .mobi formats are available here:
+
+https://scrapco.de/dataslate/phrack/
